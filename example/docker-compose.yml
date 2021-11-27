@@ -1,0 +1,59 @@
+version: '3.2'
+
+services:
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:$ELK_VERSION
+    volumes:
+      ## Make sure to set this to the directory where your lancache logs are stored.
+      - ${CACHE_ROOT}/logs:/data/logs
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+
+  ## ELK Stack
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./elasticsearch/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx1G -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      discovery.type: single-node
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./logstash/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ../logstash.conf
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./kibana/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticsearch:
