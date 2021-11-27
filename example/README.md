@@ -28,3 +28,9 @@ Ensure you change the "changeme" here to your new password.
 6. Go to Stack Management via the left sidebar, go to Saved Objects
 7. Press Import in the top right corner and select the everything.json and press import.
 8. Once imported, you can view the dashboards through the left sidebar. 
+
+## Things to note
+
+* Keep an eye on ElasticSearch memory usage, production clusters of ElasticSearch have a minimum recommendation of 16GB of memory, we have in this case only assigned 1G, you may need to increase this for your setup. You can do this through the `ES_JAVA_OPTS` variable inside the docker compose file. 
+* This uses the logstash.conf from the root directory, you may want to change this, or change the file entirely.
+* When importing the dashboards into Kibana, you may find that the values are shown in bytes. This appears to be due to a bug in the import code of kibana. To fix this yourself go to Stack Management -> Index Patterns -> lancache* -> search for bytes in fields -> edit -> enable format -> set format to bytes -> save.
