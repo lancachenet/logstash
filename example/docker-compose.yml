@@ -8,6 +8,8 @@ services:
       ## Make sure to set this to the directory where your lancache logs are stored.
       - ${CACHE_ROOT}/logs:/data/logs
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    depends_on:
+      - logstash
 
   ## ELK Stack
   elasticsearch:
