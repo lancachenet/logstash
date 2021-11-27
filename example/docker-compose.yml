@@ -25,8 +25,8 @@ services:
     ports:
       - "9200:9200"
     environment:
-      ES_JAVA_OPTS: "-Xmx1G -Xms256m"
-      ELASTIC_PASSWORD: changeme
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       discovery.type: single-node
 
   logstash:
@@ -42,6 +42,7 @@ services:
         read_only: true
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     depends_on:
       - elasticsearch
 
@@ -52,6 +53,8 @@ services:
         source: ./kibana/kibana.yml
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     ports:
       - "5601:5601"
     depends_on:

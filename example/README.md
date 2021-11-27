@@ -9,20 +9,19 @@ This assumes you already have a running LanCache setup, for instructions on how 
 ## Quickstart
 
 1. Clone this repository
-2. Change the password of elasticsearch by search and replacing "changeme" in the repository.
+2. Change the password of elasticsearch by changing the .env variable `ELASTIC_PASSWORD`
 3. Modify the logstash.conf outputs like so
 ```
 output {
   elasticsearch {
     hosts    => [ 'elasticsearch' ]
     user => 'elastic'
-    password => 'changeme'
+    password => '${ELASTIC_PASSWORD}'
     ssl => false
     index => "%{my_index}"
   }
 }
 ```
-Ensure you change the "changeme" here to your new password.
 4. Execute docker-compose up -d in the example directory
 5. Visit hostname:5601 (hostname will be localhost if running locally) and login with elastic and the password you changed.
 6. Go to Stack Management via the left sidebar, go to Saved Objects
