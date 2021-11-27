@@ -36,7 +36,7 @@ services:
         read_only: true
       - type: bind
         source: ../logstash.conf
-        target: /usr/share/logstash/pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
         read_only: true
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
