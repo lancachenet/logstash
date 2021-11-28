@@ -68,7 +68,7 @@ services:
         source: ../everything.ndjson
         target: /usr/share/tmp/everything.ndjson
         read_only: true
-    command: sh -c "/usr/bin/curl -X POST http://192.168.91.8:5601/api/saved_objects/_import -u elastic:$ELASTIC_PASSWORD -H kbn-xsrf:true -F 'file=@/usr/share/tmp/everything.ndjson'"
+    command: sh -c "/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:$ELASTIC_PASSWORD -H kbn-xsrf:true -F 'file=@/usr/share/tmp/everything.ndjson'"
     depends_on:
       - kibana
 
