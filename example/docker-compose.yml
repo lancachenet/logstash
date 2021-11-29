@@ -59,16 +59,24 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+
   dashboard-importer:
     image: appropriate/curl
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      IMPORT_DASHBOARD_ONLY_ONCE: ${IMPORT_DASHBOARD_ONLY_ONCE}
     volumes:
       - type: bind
         source: ../everything.ndjson
-        target: /usr/share/tmp/everything.ndjson
+        target: /usr/share/tmp/resources/everything.ndjson
         read_only: true
-    command: sh -c "/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:$ELASTIC_PASSWORD -H kbn-xsrf:true -F 'file=@/usr/share/tmp/everything.ndjson'"
+      - type: bind
+        source: ./dashboard-importer/importer-tool.sh
+        target: /usr/share/tmp/resources/importer-tool.sh
+      - type: bind
+        source: ./tmp
+        target: /usr/share/tmp/done/
+    command: sh "/usr/share/tmp/resources/importer-tool.sh"
     depends_on:
       - kibana
 
