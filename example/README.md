@@ -10,7 +10,8 @@ This assumes you already have a running LanCache setup, for instructions on how 
 
 1. Clone this repository
 2. Change the password of elasticsearch by changing the .env variable `ELASTIC_PASSWORD`
-3. Modify the logstash.conf outputs like so
+3. Ensure all env's are set correctly (in the .env file)
+4. Modify the logstash.conf outputs like so
 ```
 output {
   elasticsearch {
@@ -22,11 +23,9 @@ output {
   }
 }
 ```
-4. Execute docker-compose up -d in the example directory
-5. Visit hostname:5601 (hostname will be localhost if running locally) and login with elastic and the password you changed.
-6. Go to Stack Management via the left sidebar, go to Saved Objects
-7. Press Import in the top right corner and select the everything.json and press import.
-8. Once imported, you can view the dashboards through the left sidebar. 
+5. Execute docker-compose up -d in the example directory
+6. Visit hostname:5601 (hostname will be localhost if running locally) and login with elastic and the password you changed.
+7. You can now view the dashboards through the left sidebar
 
 ## Things to note
 
