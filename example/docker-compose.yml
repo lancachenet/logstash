@@ -28,6 +28,10 @@ services:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       discovery.type: single-node
+    healthcheck:
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://elasticsearch:9200"]
+        interval: 30s
+        timeout: 10s
 
   logstash:
     image: docker.elastic.co/logstash/logstash:$ELK_VERSION
@@ -59,9 +63,13 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    healthcheck:
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://kibana:5601"]
+        interval: 30s
+        timeout: 10s
 
   dashboard-importer:
-    image: appropriate/curl
+    image: alpine:latest
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       IMPORT_DASHBOARD_ONLY_ONCE: ${IMPORT_DASHBOARD_ONLY_ONCE}
@@ -74,7 +82,7 @@ services:
         source: ./dashboard-importer/importer-tool.sh
         target: /usr/share/tmp/resources/importer-tool.sh
       - type: bind
-        source: ./tmp
+        source: ./dashboard-importer/tmp/
         target: /usr/share/tmp/done/
     command: sh "/usr/share/tmp/resources/importer-tool.sh"
     depends_on:

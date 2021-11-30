@@ -1,22 +1,31 @@
 #!/bin/bash
 
-if [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "true" ]]
+if [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "true" && -e /usr/share/tmp/done/import_done ]]
 then
-    echo "IMPORT_DASHBOARD_ONLY_ONCE set to true, will only run once"
-
-    if [[ -e /usr/share/tmp/done/import_done ]]
-    then
-        echo "import has already been ran"
-        exit 0
-    else
-        /usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/everything.ndjson' && touch /usr/share/tmp/done/import_done
-    fi
+    echo "IMPORT_DASHBOARD_ONLY_ONCE set to true and has already been ran"
+    exit 0
 
 elif [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "false" ]]
 then
-    echo "IMPORT_DASHBOARD_ONLY_ONCE set to false, will run on each launch of container"
-    /usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/everything.ndjson' && touch /usr/share/tmp/done/import_done
+    pass
 else
-    echo "the IMPORT_DASHBOARD_ONLY_ONCE env was set to " $IMPORT_DASHBOARD_ONLY_ONCE ", only true or false are supported values for this env. You should review this in your .env file and re-run this container"
+    echo "the IMPORT_DASHBOARD_ONLY_ONCE env was set to " "$IMPORT_DASHBOARD_ONLY_ONCE" ", only true or false are supported values for this env. You should review this in your .env file and re-run this container"
     exit 1
 fi
+
+# Installing dependencies now we know we need to run this
+apk update
+apk add curl jq
+
+echo "$state"
+
+until [[ "$state" = "green" ]]
+do
+  state=$(curl -u elastic:"$ELASTIC_PASSWORD" http://kibana:5601/api/status | jq -r '.status.overall.state')
+  sleep 5
+  echo "Waiting for Kibana's /api/status endpoint to report as green"
+done
+
+echo "Kibana is ready, onto the import"
+
+/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/resources/everything.ndjson' && touch /usr/share/tmp/done/import_done
