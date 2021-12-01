@@ -75,8 +75,8 @@ services:
       IMPORT_DASHBOARD_ONLY_ONCE: ${IMPORT_DASHBOARD_ONLY_ONCE}
     volumes:
       - type: bind
-        source: ../everything.ndjson
-        target: /usr/share/tmp/resources/everything.ndjson
+        source: ../lancachenet-dashboards.ndjson
+        target: /usr/share/tmp/resources/lancachenet-dashboards.ndjson
         read_only: true
       - type: bind
         source: ./dashboard-importer/importer-tool.sh

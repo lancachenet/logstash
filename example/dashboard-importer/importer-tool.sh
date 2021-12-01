@@ -28,4 +28,4 @@ done
 
 echo "Kibana is ready, onto the import"
 
-/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/resources/everything.ndjson' && touch /usr/share/tmp/done/import_done
+/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/resources/lancachenet-dashboards.ndjson' && touch /usr/share/tmp/done/import_done
