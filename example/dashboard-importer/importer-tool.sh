@@ -5,11 +5,17 @@ then
     echo "IMPORT_DASHBOARD_ONLY_ONCE set to true and has already been ran"
     exit 0
 
+elif [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "disabled" ]]
+then
+    echo "IMPORT_DASHBOARD_ONLY_ONCE set to disabled, not importing"
+    exit 0
+
 elif [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "false" ]] || [[ "$IMPORT_DASHBOARD_ONLY_ONCE" == "true" ]]
 then
     pass
+
 else
-    echo "the IMPORT_DASHBOARD_ONLY_ONCE env was set to $IMPORT_DASHBOARD_ONLY_ONCE, only true or false are supported values for this env. You should review this in your .env file and re-run this container"
+    echo "the IMPORT_DASHBOARD_ONLY_ONCE env was set to $IMPORT_DASHBOARD_ONLY_ONCE, only true, false or disabled are supported values for this env. You should review this in your .env file and re-run this container"
     exit 1
 fi
 
