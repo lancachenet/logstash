@@ -45,7 +45,7 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
         read_only: true
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      LS_JAVA_OPTS: ${LS_JAVA_OPTS}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     depends_on:
       - elasticsearch
