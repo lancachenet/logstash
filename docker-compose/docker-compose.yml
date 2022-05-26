@@ -26,12 +26,11 @@ services:
       - "9200:9200"
     environment:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       ELASTIC_LICENCE_TYPE: ${ELASTIC_LICENCE_TYPE}
       discovery.type: single-node
     healthcheck:
-        test: ["CMD", "curl", "-f", "-u", "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}", "http://elasticsearch:9200"]
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://elasticsearch:9200"]
         interval: 30s
         timeout: 10s
 
@@ -48,7 +47,6 @@ services:
         read_only: true
     environment:
       LS_JAVA_OPTS: ${LS_JAVA_OPTS}
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     depends_on:
       - elasticsearch
@@ -61,21 +59,19 @@ services:
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
     environment:
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
     healthcheck:
-        test: ["CMD", "curl", "-f", "-u", "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}", "http://kibana:5601"]
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://kibana:5601"]
         interval: 30s
         timeout: 10s
 
   dashboard-importer:
     image: alpine:latest
     environment:
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       IMPORT_DASHBOARD_ONLY_ONCE: ${IMPORT_DASHBOARD_ONLY_ONCE}
     volumes:

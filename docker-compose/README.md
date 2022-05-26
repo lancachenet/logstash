@@ -10,7 +10,7 @@ This assumes you already have a running LanCache setup, for instructions on how 
 
 1. Clone this repository
 2. Change to the `docker-compose/` directory
-3. Update the required .env fields in the such as `ELASTIC_USERNAME`, `ELASTIC_PASSWORD`, `IMPORT_DASHBOARD_ONLY_ONCE` & `CACHE_ROOT`,
+3. Update the required .env fields in the such as `ELASTIC_PASSWORD`, `IMPORT_DASHBOARD_ONLY_ONCE` & `CACHE_ROOT`,
 4. Execute `docker-compose up -d` in the example directory,
 5. Visit hostname:5601 (hostname will be localhost if running locally), then login with elastic and the password you changed.
 6. You can now view the dashboards through the left sidebar, it might take some time for all of the data to be pulled into the ELK stack

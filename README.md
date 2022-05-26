@@ -15,7 +15,7 @@ This config is used to interpret monocache logs in elastic search. It defines a 
 In the output section of the logstash.conf file you will need to change the hosts array to match the names of your elastic search hosts, and you might need to update the user/password rows:
 
     hosts    => [ 'elasticsearch' ] 
-    user => '${ELASTIC_USERNAME}'
+    user => 'elastic'
     password => '${ELASTIC_PASSWORD}'
 
 ## Reference
