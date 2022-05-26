@@ -27,11 +27,11 @@ echo "$state"
 
 until [[ "$state" = "green" ]]
 do
-  state=$(curl -u elastic:"$ELASTIC_PASSWORD" http://kibana:5601/api/status | jq -r '.status.overall.state')
+  state=$(curl -u "$ELASTIC_USERNAME":"$ELASTIC_PASSWORD" http://kibana:5601/api/status | jq -r '.status.overall.state')
   sleep 5
   echo "Waiting for Kibana's /api/status endpoint to report as green"
 done
 
 echo "Kibana is ready, onto the import"
 
-/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u elastic:"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/resources/lancachenet-dashboards.ndjson' && touch /usr/share/tmp/done/import_done
+/usr/bin/curl -X POST http://kibana:5601/api/saved_objects/_import -u "$ELASTIC_USERNAME":"$ELASTIC_PASSWORD" -H kbn-xsrf:true -F 'file=@/usr/share/tmp/resources/lancachenet-dashboards.ndjson' && touch /usr/share/tmp/done/import_done
