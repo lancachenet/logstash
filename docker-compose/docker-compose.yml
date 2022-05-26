@@ -28,6 +28,7 @@ services:
       ES_JAVA_OPTS: ${ES_JAVA_OPTS}
       ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ELASTIC_LICENCE_TYPE: ${ELASTIC_LICENCE_TYPE}
       discovery.type: single-node
     healthcheck:
         test: ["CMD", "curl", "-f", "-u", "${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}", "http://elasticsearch:9200"]
