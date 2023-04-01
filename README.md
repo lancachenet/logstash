@@ -4,7 +4,7 @@ This config is used to interpret monocache logs in elastic search. It defines a 
 
 ## Installation
 
-* If you do not already have an ELK stack deployed we suggest looking at the [docker-compose/](https://github.com/lancachenet/logstash/tree/master/docker-compose) directory as a base for your deployment, whilst it is fully functional, we suggest looking at [Elastic's production guidlines](https://medium.com/@abhidrona/elasticsearch-deployment-best-practices-d6c1323b25d7) & modifying the config appropriately before deploying it.
+* If you do not already have an ELK stack deployed we suggest looking at the [docker-compose/](https://github.com/hauslan/logstash/tree/master/docker-compose) directory as a base for your deployment, whilst it is fully functional, we suggest looking at [Elastic's production guidlines](https://medium.com/@abhidrona/elasticsearch-deployment-best-practices-d6c1323b25d7) & modifying the config appropriately before deploying it.
 * If you already have an ELK deployment:
     * You will need to add the config to your logstash folder. 
     * The everything.json file can be imported through your kibabna instance by navigating to Management > Saved Objects and selecting import, or if you want to import it through the Kibana API look at the `docker-compose/dashboard-importer/importer-tool.sh` script as an example.
