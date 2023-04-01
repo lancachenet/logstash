@@ -1,0 +1,11 @@
+name: "lancache"
+filebeat.inputs:
+- type: log
+  paths:
+  # Change this if your logs are mapped to a different directory.
+  - '/data/logs/*.log'
+  encoding: utf-8
+output.logstash:
+  # Change this if logstash is running on a different hostname
+  hosts: ["logstash:5044"]
+  bulk_max_size: 1024

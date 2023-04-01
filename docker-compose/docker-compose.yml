@@ -1,0 +1,93 @@
+version: '3.3'
+
+services:
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:$ELK_VERSION
+    volumes:
+      ## Make sure to set this to the directory where your lancache logs are stored.
+      - ${CACHE_ROOT}/logs:/data/logs
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    depends_on:
+      - logstash
+
+  ## ELK Stack
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./elasticsearch/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      ELASTIC_LICENCE_TYPE: ${ELASTIC_LICENCE_TYPE}
+      discovery.type: single-node
+    healthcheck:
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://elasticsearch:9200"]
+        interval: 30s
+        timeout: 10s
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./logstash/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ../logstash.conf
+        target: /usr/share/logstash/pipeline/logstash.conf
+        read_only: true
+    environment:
+      LS_JAVA_OPTS: ${LS_JAVA_OPTS}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:$ELK_VERSION
+    volumes:
+      - type: bind
+        source: ./kibana/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    healthcheck:
+        test: ["CMD", "curl", "-f", "-u", "elastic:${ELASTIC_PASSWORD}", "http://kibana:5601"]
+        interval: 30s
+        timeout: 10s
+
+  dashboard-importer:
+    image: alpine:latest
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      IMPORT_DASHBOARD_ONLY_ONCE: ${IMPORT_DASHBOARD_ONLY_ONCE}
+    volumes:
+      - type: bind
+        source: ../lancachenet-dashboards.ndjson
+        target: /usr/share/tmp/resources/lancachenet-dashboards.ndjson
+        read_only: true
+      - type: bind
+        source: ./dashboard-importer/importer-tool.sh
+        target: /usr/share/tmp/resources/importer-tool.sh
+      - type: bind
+        source: ./dashboard-importer/tmp/
+        target: /usr/share/tmp/done/
+    command: sh "/usr/share/tmp/resources/importer-tool.sh"
+    depends_on:
+      - kibana
+
+volumes:
+  elasticsearch:
