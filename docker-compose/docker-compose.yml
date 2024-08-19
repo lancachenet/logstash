@@ -1,9 +1,9 @@
 version: '3.3'
 
 services:
-
   filebeat:
     image: docker.elastic.co/beats/filebeat:$ELK_VERSION
+    restart: always
     volumes:
       ## Make sure to set this to the directory where your lancache logs are stored.
       - ${CACHE_ROOT}/logs:/data/logs
@@ -14,6 +14,7 @@ services:
   ## ELK Stack
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:$ELK_VERSION
+    restart: always
     volumes:
       - type: bind
         source: ./elasticsearch/elasticsearch.yml
@@ -36,6 +37,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:$ELK_VERSION
+    restart: always
     volumes:
       - type: bind
         source: ./logstash/logstash.yml
@@ -45,6 +47,8 @@ services:
         source: ../logstash.conf
         target: /usr/share/logstash/pipeline/logstash.conf
         read_only: true
+    ports:
+      - "5400:5400"
     environment:
       LS_JAVA_OPTS: ${LS_JAVA_OPTS}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
@@ -53,6 +57,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:$ELK_VERSION
+    restart: always
     volumes:
       - type: bind
         source: ./kibana/kibana.yml
