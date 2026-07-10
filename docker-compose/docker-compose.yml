@@ -48,7 +48,7 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
         read_only: true
     ports:
-      - "5400:5400"
+      - "5044:5044"
     environment:
       LS_JAVA_OPTS: ${LS_JAVA_OPTS}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
